@@ -1,0 +1,155 @@
+import type { LearnModule } from "../types";
+
+export const M09_OOP: LearnModule = {
+  id: "oop-cpp",
+  title: "OOP with C++",
+  titleHi: "C++ के साथ OOP",
+  blurb: "Classes, objects, inheritance and polymorphism — from zero to the exact output questions exams ask.",
+  lessons: [
+    {
+      id: "oop-pillars",
+      title: "Classes, objects & the four pillars of OOP",
+      oneLine: "A class is a blueprint; an object is a real thing built from it — and OOP organises programs around such objects.",
+      minutes: 16,
+      blocks: [
+        { t: "p", text: "**Why object-oriented programming (OOP)?** In C we write functions and pass data around. In big programs that gets messy. OOP groups the **data** and the **functions that work on it** together into one unit called an **object** — like real-world things that have properties and can do things." },
+        { t: "analogy", text: "A class is the architect's drawing of a house: it says every house has rooms, a door and a colour. An object is an actual house built from that drawing. From one drawing you can build many houses, each with its own colour." },
+        { t: "code", lang: "cpp", code: 'class Student {            // the blueprint\npublic:\n    string name;           // data (attributes)\n    int marks;\n    void show() {          // function (method)\n        cout << name << " " << marks;\n    }\n};\n\nint main() {\n    Student s1;            // an object made from the class\n    s1.name = "Asha";\n    s1.marks = 82;\n    s1.show();\n}', output: "Asha 82" },
+        { t: "p", text: "**The four pillars of OOP:**" },
+        {
+          t: "table",
+          head: ["Pillar", "Plain meaning", "Everyday example", "In C++"],
+          rows: [
+            ["Encapsulation", "Wrap data + functions together and hide the inside", "A capsule hides the medicine inside", "private data, public functions"],
+            ["Abstraction", "Show WHAT it does, hide HOW", "You drive a car without knowing how the engine works", "Abstract classes, interfaces"],
+            ["Inheritance", "A new class reuses an existing class", "A child inherits features from parents", "class Car : public Vehicle"],
+            ["Polymorphism", "One name, many forms", "The word “run” — a person runs, a program runs, a tap runs", "Function overloading, virtual functions"],
+          ],
+        },
+        { t: "trick", text: "“A PIE” — Abstraction, Polymorphism, Inheritance, Encapsulation." },
+        { t: "p", text: "**Access specifiers** — who can see a member:" },
+        {
+          t: "table",
+          head: ["Specifier", "Same class", "Derived (child) class", "Outside the class"],
+          rows: [["private", "✓", "✗", "✗"], ["protected", "✓", "✓", "✗"], ["public", "✓", "✓", "✓"]],
+          caption: "In a class, members are private by default; in a struct, they are public by default",
+        },
+        { t: "p", text: "**Inheritance types:** single (A → B), multilevel (A → B → C), multiple (C inherits from both A and B — allowed in C++, not for classes in Java), hierarchical (one parent, many children), hybrid (a mix). The **diamond problem** in multiple inheritance (two copies of the same grandparent) is solved with **virtual base classes**." },
+        {
+          t: "points",
+          items: [
+            "Friend function: not a member, but allowed to access private members",
+            "Static member: one copy shared by ALL objects of the class (e.g. a counter of how many students exist)",
+            "this pointer: inside a member function, points to the object that called it",
+            "Inline function: the compiler pastes the code at the call site to save call time",
+          ],
+        },
+        {
+          t: "recap",
+          items: [
+            "Class = blueprint; object = an instance built from it",
+            "Encapsulation (hide data), Abstraction (show what, hide how), Inheritance (reuse), Polymorphism (many forms)",
+            "private → only the class; protected → class + children; public → everyone",
+            "class members private by default; struct members public by default",
+            "C++ allows multiple inheritance; Java doesn't (for classes)",
+          ],
+        },
+      ],
+      quiz: [
+        { q: "Hiding internal details and exposing only an interface is:", options: ["Inheritance", "Abstraction", "Overloading", "Recursion"], answer: 1, explain: "Abstraction shows what, hides how." },
+        { q: "Default access of class members in C++ is:", options: ["public", "private", "protected", "friend"], answer: 1, explain: "struct members default to public." },
+        { q: "Which language allows multiple inheritance of classes?", options: ["Java", "C++", "C#", "None"], answer: 1, explain: "Java and C# allow it only through interfaces." },
+      ],
+    },
+    {
+      id: "constructors-overloading",
+      title: "Constructors, destructors, overloading & overriding",
+      oneLine: "A constructor sets up a new object automatically; a destructor cleans up when it's destroyed — and the order matters in inheritance.",
+      minutes: 15,
+      blocks: [
+        { t: "p", text: "**Constructor** — a special function that runs AUTOMATICALLY when an object is created, to give it starting values. Rules: same name as the class, **no return type** (not even void)." },
+        { t: "code", lang: "cpp", code: 'class Box {\npublic:\n    int len;\n    Box()        { len = 1; }   // default constructor\n    Box(int l)   { len = l; }   // parameterised constructor\n};\n\nBox a;        // len = 1\nBox b(5);     // len = 5', output: "a.len = 1, b.len = 5" },
+        {
+          t: "table",
+          head: ["Type of constructor", "Meaning"],
+          rows: [["Default", "Takes no arguments"], ["Parameterised", "Takes arguments to set values"], ["Copy", "Makes a new object as a copy of an existing one: Box c(b);"]],
+          caption: "Constructors CAN be overloaded (several with different parameters)",
+        },
+        { t: "p", text: "**Destructor** — runs automatically when an object is destroyed (goes out of scope or is deleted), to free memory or close files. Written `~ClassName()`, takes **no parameters**, so it **cannot be overloaded** — one per class." },
+        { t: "p", text: "**Order in inheritance:** when you create a child object, the PARENT's constructor runs FIRST (the foundation before the floors), then the child's. Destructors run in the REVERSE order (child first, then parent — like dismantling from the top)." },
+        { t: "code", lang: "cpp", code: 'class A { public: A(){ cout << "A "; }  ~A(){ cout << "~A "; } };\nclass B : public A { public: B(){ cout << "B "; } ~B(){ cout << "~B "; } };\n\nint main() { B obj; }    // obj is created, then destroyed at the end of main', output: "A B ~B ~A" },
+        { t: "p", text: "**Overloading vs overriding** — very often confused:" },
+        {
+          t: "table",
+          head: ["", "Function overloading", "Function overriding"],
+          rows: [
+            ["What", "Same function name, DIFFERENT parameters", "Child class REDEFINES a parent's function with the SAME name and parameters"],
+            ["Where", "In the same class/scope", "Between parent and child classes"],
+            ["Decided", "At compile time (static binding)", "At run time when the function is virtual (dynamic binding)"],
+            ["Polymorphism type", "Compile-time", "Run-time"],
+            ["Example", "add(int, int) and add(double, double)", "Animal::sound() and Dog::sound()"],
+          ],
+        },
+        { t: "code", lang: "cpp", code: "int    add(int a, int b)          { return a + b; }\ndouble add(double a, double b)    { return a + b; }\nint    add(int a, int b, int c)   { return a + b + c; }\n// add(2, 3) → 5,  add(2.5, 1.5) → 4.0,  add(1, 2, 3) → 6", output: "The compiler picks the version by the arguments" },
+        { t: "trap", text: "Changing ONLY the return type is not overloading — int f(int) and double f(int) together give a compile error." },
+        { t: "p", text: "**Operator overloading** lets operators work with your own classes, e.g. `+` adding two Complex numbers. Operators that can NOT be overloaded: `::` (scope), `.` (member access), `.*`, `?:` (conditional), `sizeof`." },
+        {
+          t: "recap",
+          items: [
+            "Constructor: same name as class, no return type, runs on creation, can be overloaded",
+            "Destructor: ~Name(), no parameters, can't be overloaded",
+            "Construction: parent → child; destruction: child → parent",
+            "Overloading = same name, different parameters (compile time); overriding = same signature in child (run time)",
+            "Can't overload: ::  .  .*  ?:  sizeof",
+          ],
+        },
+      ],
+      quiz: [
+        { q: "In C++, which operator cannot be overloaded?", options: ["+", "[]", "::", "=="], answer: 2, explain: "Scope resolution, dot, .*, ?: and sizeof cannot be overloaded." },
+        { q: "Derived class D inherits base B. Destructors run in the order:", options: ["B then D", "D then B", "Only D", "Only B"], answer: 1, explain: "Reverse of construction." },
+        { q: "A constructor's return type is:", options: ["void", "int", "the class type", "none — it has no return type"], answer: 3, explain: "Constructors never declare a return type." },
+      ],
+    },
+    {
+      id: "virtual-functions",
+      title: "Virtual functions, abstract classes & virtual destructors",
+      oneLine: "virtual means: decide which function to run at run time, by the REAL type of the object — not by the type of the pointer.",
+      minutes: 16,
+      blocks: [
+        { t: "p", text: "**A base-class pointer can point to a child object.** `Shape *s = new Circle();` is allowed because a Circle IS a Shape. The question is: when we call `s->draw()`, which draw() runs — Shape's or Circle's?" },
+        { t: "code", lang: "cpp", code: 'class Shape { public: void draw() { cout << "Shape"; } };\nclass Circle : public Shape { public: void draw() { cout << "Circle"; } };\n\nShape *s = new Circle();\ns->draw();', output: "Shape", note: "Without virtual, C++ looks only at the POINTER's type (Shape*) — decided at compile time (static binding)." },
+        { t: "code", lang: "cpp", code: 'class Shape { public: virtual void draw() { cout << "Shape"; } };\nclass Circle : public Shape { public: void draw() override { cout << "Circle"; } };\n\nShape *s = new Circle();\ns->draw();', output: "Circle", note: "With virtual, C++ looks at the real OBJECT (a Circle) — decided at run time (dynamic binding). This is run-time polymorphism." },
+        { t: "analogy", text: "A TV remote (the pointer) says “Power ON”. Without virtual, it would always switch on a generic TV. With virtual, it switches on whatever brand of TV is actually in front of it." },
+        { t: "p", text: "**How does C++ do it?** Every class with virtual functions gets a hidden table of function addresses — the **vtable**. Every object of that class carries a hidden pointer to its class's vtable — the **vptr**. A virtual call follows the vptr to find the right function." },
+        { t: "p", text: "**Pure virtual function & abstract class.** Sometimes the parent can't sensibly define a function at all — what's the area of a general “Shape”? Mark it **pure virtual** with `= 0`:" },
+        { t: "code", lang: "cpp", code: "class Shape {\npublic:\n    virtual double area() = 0;   // pure virtual: no body here\n};\n\nclass Square : public Shape {\n    double side = 2;\npublic:\n    double area() override { return side * side; }\n};\n\n// Shape s;            // ERROR: cannot create an object of an abstract class\nShape *p = new Square(); // OK: pointer to the abstract class\ncout << p->area();", output: "4" },
+        {
+          t: "points",
+          items: [
+            "A class with at least ONE pure virtual function is an ABSTRACT class",
+            "You cannot create objects of an abstract class, but you can have pointers/references to it",
+            "A child must override every pure virtual function, otherwise the child is abstract too",
+            "Constructors can NOT be virtual; destructors CAN (and should be, in a base class)",
+          ],
+        },
+        { t: "p", text: "**Why a virtual destructor?** If you delete a child object through a parent pointer and the parent's destructor is NOT virtual, only the parent's destructor runs — the child's clean-up is skipped (memory leak / undefined behaviour)." },
+        { t: "code", lang: "cpp", code: 'class Base    { public: ~Base()    { cout << "~Base "; } };\nclass Derived : public Base { public: ~Derived() { cout << "~Derived "; } };\n\nBase *p = new Derived();\ndelete p;', output: "~Base", note: "The Derived part is never cleaned up. Write virtual ~Base() and the output becomes “~Derived ~Base” — both run, child first." },
+        { t: "trick", text: "Rule of thumb: if a class has ANY virtual function, give it a virtual destructor." },
+        {
+          t: "recap",
+          items: [
+            "Without virtual: pointer type decides (compile time). With virtual: object type decides (run time)",
+            "vtable per class, vptr per object",
+            "Pure virtual = 0 → abstract class → no objects, only pointers/references",
+            "Constructors can't be virtual; base destructors should be virtual",
+          ],
+        },
+      ],
+      quiz: [
+        { q: "A class with a pure virtual function is called:", options: ["Virtual class", "Abstract class", "Friend class", "Sealed class"], answer: 1, explain: "It cannot be instantiated." },
+        { q: "Runtime polymorphism in C++ requires:", options: ["Function overloading", "Virtual functions called through base pointers/references", "Templates", "Inline functions"], answer: 1, explain: "Dynamic binding through the vtable." },
+        { q: "Why make a base-class destructor virtual?", options: ["To make objects smaller", "So delete through a base pointer also runs the derived destructor", "To allow constructor overloading", "It is required by the compiler"], answer: 1, explain: "Otherwise only the base destructor runs." },
+      ],
+    },
+  ],
+};

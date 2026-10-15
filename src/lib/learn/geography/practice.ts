@@ -1,0 +1,53 @@
+import type { LessonMcq } from "../types";
+
+/** Exam-level module tests for the Geography course, keyed by module id. */
+export const GEOGRAPHY_PRACTICE: Record<string, LessonMcq[]> = {
+  physical: [
+    { q: "The largest planet of the solar system is:", options: ["Saturn", "Jupiter", "Neptune", "Uranus"], answer: 1, explain: "Its moon Ganymede is the largest moon." },
+    { q: "Places 15° apart in longitude differ in local time by:", options: ["15 minutes", "30 minutes", "1 hour", "4 hours"], answer: 2, explain: "1° = 4 minutes, so 15° = 60 minutes." },
+    { q: "Indian Standard Time is based on the longitude:", options: ["75°E", "82°30′E", "85°E", "90°E"], answer: 1, explain: "Passing near Mirzapur; GMT + 5:30." },
+    { q: "Which layer of the Earth is liquid?", options: ["Crust", "Upper mantle", "Outer core", "Inner core"], answer: 2, explain: "S-waves cannot pass through it." },
+    { q: "Slate is the metamorphic form of:", options: ["Limestone", "Shale", "Sandstone", "Granite"], answer: 1, explain: "Limestone → marble; sandstone → quartzite." },
+    { q: "The ozone layer lies in the:", options: ["Troposphere", "Stratosphere", "Mesosphere", "Ionosphere"], answer: 1, explain: "It absorbs ultraviolet rays." },
+    { q: "Tropical cyclones near Australia are called:", options: ["Typhoons", "Hurricanes", "Willy-willies", "Tornadoes"], answer: 2, explain: "Typhoons are in the West Pacific." },
+    { q: "The deepest point on the Earth is in the:", options: ["Puerto Rico Trench", "Java Trench", "Mariana Trench", "Tonga Trench"], answer: 2, explain: "Challenger Deep, Pacific Ocean." },
+    { q: "Tides are caused mainly by the gravity of the:", options: ["Sun", "Moon", "Earth's rotation", "Wind"], answer: 1, explain: "The Sun's pull adds to make spring tides." },
+    { q: "An ox-bow lake is formed by:", options: ["A glacier", "A river", "Wind", "A volcano"], answer: 1, explain: "When a meander is cut off." },
+  ],
+  "india-physical": [
+    { q: "The highest peak of South India is:", options: ["Doddabetta", "Anamudi", "Mahendragiri", "Kalsubai"], answer: 1, explain: "2,695 m, Kerala." },
+    { q: "“Duns” such as Dehradun lie between the:", options: ["Greater & Lesser Himalaya", "Lesser Himalaya & Shiwaliks", "Shiwaliks & the plains", "Western & Eastern Ghats"], answer: 1, explain: "Flat longitudinal valleys." },
+    { q: "In Tibet, the Brahmaputra is known as the:", options: ["Dihang", "Tsangpo", "Jamuna", "Padma"], answer: 1, explain: "Dihang in Arunachal; Jamuna in Bangladesh." },
+    { q: "Majuli, the largest river island of India, is on the:", options: ["Ganga", "Brahmaputra", "Godavari", "Mahanadi"], answer: 1, explain: "In Assam." },
+    { q: "The Tehri dam is on the river:", options: ["Alaknanda", "Bhagirathi", "Yamuna", "Sutlej"], answer: 1, explain: "India's highest dam." },
+    { q: "Sambhar, the largest inland salt lake, is in:", options: ["Gujarat", "Rajasthan", "Odisha", "Ladakh"], answer: 1, explain: "Near Jaipur." },
+    { q: "Mawsynram, one of the wettest places on Earth, is in:", options: ["Assam", "Meghalaya", "Sikkim", "Kerala"], answer: 1, explain: "On the Khasi hills." },
+    { q: "Laterite soil forms mainly because of:", options: ["Wind deposits", "Leaching in heavy rain and heat", "River floods", "Volcanic lava"], answer: 1, explain: "Nutrients are washed out." },
+    { q: "The Indus Waters Treaty was signed in:", options: ["1950", "1960", "1972", "1996"], answer: 1, explain: "With Pakistan, World Bank–mediated." },
+    { q: "Zoji La connects:", options: ["Manali–Lahaul", "Srinagar–Leh", "Jammu–Srinagar", "Sikkim–Tibet"], answer: 1, explain: "Banihal connects Jammu–Srinagar." },
+  ],
+  "india-economic": [
+    { q: "Which crop is called the “golden fibre”?", options: ["Cotton", "Jute", "Silk", "Coir"], answer: 1, explain: "Mainly in West Bengal, Bihar, Assam." },
+    { q: "Digboi, India's oldest oil field, is in:", options: ["Gujarat", "Assam", "Maharashtra", "Rajasthan"], answer: 1, explain: "Mumbai High is the largest offshore field." },
+    { q: "India's first cotton mill was set up in 1854 at:", options: ["Ahmedabad", "Mumbai", "Kanpur", "Surat"], answer: 1, explain: "Mumbai = “Cottonopolis”." },
+    { q: "TISCO, Jamshedpur, was set up in:", options: ["1854", "1907", "1947", "1956"], answer: 1, explain: "First big private steel plant." },
+    { q: "Koderma, famous for mica, is in:", options: ["Bihar", "Jharkhand", "Odisha", "Rajasthan"], answer: 1, explain: "Chota Nagpur plateau." },
+    { q: "The first passenger train in India (1853) ran between:", options: ["Howrah–Hooghly", "Bori Bunder–Thane", "Madras–Arcot", "Delhi–Agra"], answer: 1, explain: "16 April 1853." },
+    { q: "India's literacy rate in Census 2011 was:", options: ["64.8%", "74.04%", "82.1%", "69.3%"], answer: 1, explain: "Kerala highest, Bihar lowest." },
+    { q: "Which state had the lowest sex ratio in Census 2011?", options: ["Punjab", "Haryana", "Bihar", "Uttar Pradesh"], answer: 1, explain: "879." },
+    { q: "Operation Flood is associated with:", options: ["Fish", "Milk", "Oilseeds", "Wheat"], answer: 1, explain: "White Revolution — Verghese Kurien." },
+    { q: "Wheat in India is mainly a:", options: ["Kharif crop", "Rabi crop", "Zaid crop", "Plantation crop"], answer: 1, explain: "Sown in winter, harvested in spring." },
+  ],
+  "world-env-bihar": [
+    { q: "The Durand Line separates:", options: ["India and China", "Pakistan and Afghanistan", "India and Pakistan", "North and South Korea"], answer: 1, explain: "Drawn in 1893." },
+    { q: "The longest river in the world is the:", options: ["Amazon", "Nile", "Yangtze", "Mississippi"], answer: 1, explain: "The Amazon carries the most water." },
+    { q: "The Kyoto Protocol deals with:", options: ["Ozone depletion", "Greenhouse gas emissions", "Wetlands", "Trade in wildlife"], answer: 1, explain: "1997; Montreal Protocol is for ozone." },
+    { q: "Project Tiger was launched in:", options: ["1972", "1973", "1985", "1992"], answer: 1, explain: "At Jim Corbett." },
+    { q: "Which river is called the “Sorrow of Bihar”?", options: ["Gandak", "Kosi", "Son", "Bagmati"], answer: 1, explain: "It keeps changing course." },
+    { q: "How many districts does Bihar have?", options: ["36", "38", "40", "33"], answer: 1, explain: "In 9 divisions." },
+    { q: "The Vikramshila Gangetic Dolphin Sanctuary is in:", options: ["Patna", "Bhagalpur", "Munger", "Sahebganj"], answer: 1, explain: "The Gangetic dolphin is the national aquatic animal." },
+    { q: "The chairperson of the NDMA is the:", options: ["Home Minister", "Prime Minister", "President", "Chief Justice"], answer: 1, explain: "DM Act 2005." },
+    { q: "The capital of Bhutan is:", options: ["Paro", "Thimphu", "Punakha", "Gangtok"], answer: 1, explain: "Gangtok is Sikkim's capital." },
+    { q: "Valmiki Tiger Reserve is in which district of Bihar?", options: ["Kaimur", "West Champaran", "Gaya", "Banka"], answer: 1, explain: "On the Nepal border." },
+  ],
+};

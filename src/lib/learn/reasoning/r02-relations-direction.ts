@@ -1,0 +1,101 @@
+import type { LearnModule } from "../types";
+
+export const R02_RELATIONS_DIRECTION: LearnModule = {
+  id: "relations-direction",
+  title: "Blood relations & direction sense",
+  titleHi: "रक्त संबंध एवं दिशा ज्ञान",
+  blurb: "Draw a family tree or a path on paper and these questions solve themselves.",
+  lessons: [
+    {
+      id: "blood-relations",
+      title: "Blood relations: family trees and coded relations",
+      oneLine: "Break a long relation into small steps from the speaker's side, draw the family tree, and never guess a gender that is not given.",
+      minutes: 15,
+      blocks: [
+        { t: "p", text: "Blood-relation questions describe a family in words. Start from the **speaker** (“my …”) and move one link at a time. “My grandfather's only son” is simply **my father**." },
+        {
+          t: "table",
+          head: ["Relation", "Means"],
+          rows: [
+            ["Father's or mother's father", "Grandfather"],
+            ["Father's brother", "Uncle (chacha / tau)"],
+            ["Mother's brother", "Maternal uncle (mama)"],
+            ["Father's sister's husband", "Uncle (phupha)"],
+            ["Brother's or sister's son / daughter", "Nephew / niece"],
+            ["Uncle's or aunt's child", "Cousin"],
+            ["Son's wife / daughter's husband", "Daughter-in-law / son-in-law"],
+            ["Wife's or husband's brother", "Brother-in-law"],
+          ],
+        },
+        {
+          t: "tree",
+          people: [
+            { id: "D", sex: "m", gen: 0, note: "C's father" },
+            { id: "C", sex: "f", gen: 1, note: "mother of A, B" },
+            { id: "A", sex: "f", gen: 2, note: "B's sister" },
+            { id: "B", sex: "m", gen: 2 },
+          ],
+          links: [["D", "C", "child"], ["C", "A", "child"], ["C", "B", "child"], ["A", "B", "sibling"]],
+          caption: "One row per generation — two rows below D, so A is D's granddaughter",
+        },
+        { t: "example", title: "Pointing to a photograph", steps: ["Arun says, “She is the daughter of my grandfather's only son.”", "My grandfather's only son = my father.", "Daughter of my father = my sister."], answer: "She is Arun's sister" },
+        {
+          t: "tree",
+          people: [
+            { id: "GF", sex: "m", gen: 0, note: "grandfather" },
+            { id: "F", sex: "m", gen: 1, note: "only son = father" },
+            { id: "Arun", sex: "m", gen: 2 },
+            { id: "She", sex: "f", gen: 2, note: "Arun's sister" },
+          ],
+          links: [["GF", "F", "child"], ["F", "Arun", "child"], ["F", "She", "child"], ["Arun", "She", "sibling"]],
+          caption: "Climb up from the speaker, then come down",
+        },
+        { t: "example", title: "Coded relations", steps: ["P # Q means P is the father of Q; P $ Q means P is the sister of Q.", "A # B $ C: A is B's father, and B is C's sister.", "So B and C are siblings, and A is the father of both."], answer: "A is the father of C" },
+        { t: "trap", text: "“P is the brother of Q and Q is the sister of R” does NOT tell you whether R is male or female. When the gender is missing, the answer is “cannot be determined”." },
+        { t: "exam", items: ["Pointing / introducing statements (“Pointing to a man, X said …”)", "Coded relations with symbols (+, −, ×, ÷ or @, #, $)", "Family puzzles: 6–8 members over three generations (banking)", "Answer choices often include the trap “cannot be determined”"] },
+        { t: "recap", items: ["Start from the speaker and reduce one link at a time", "Draw the tree: squares for men, circles for women, rows for generations", "Only son / only daughter usually points back to the speaker or a parent", "No gender given → cannot be determined"] },
+      ],
+      quiz: [
+        { q: "Pointing to a photo, Arun says, “She is the daughter of my grandfather's only son.” Who is she to Arun?", options: ["Sister", "Cousin", "Aunt", "Niece"], answer: 0, explain: "Grandfather's only son is Arun's father." },
+        { q: "A is the father of B. B is the sister of C. C is the son of D, and D is a woman. How is D related to A?", options: ["Wife", "Sister", "Daughter", "Mother"], answer: 0, explain: "D is the mother of A's children." },
+        { q: "My mother's brother's son is my:", options: ["Brother", "Nephew", "Cousin", "Uncle"], answer: 2, explain: "Child of a maternal uncle." },
+        { q: "If P # Q means P is the father of Q and P $ Q means P is the sister of Q, what does A # B $ C mean?", options: ["A is the father of C", "A is the brother of C", "A is the uncle of C", "C is the father of A"], answer: 0, explain: "B and C are siblings; A is B's father." },
+      ],
+    },
+    {
+      id: "direction-distance",
+      title: "Direction sense, distance and shadows",
+      oneLine: "Draw the path with north at the top, turn from the way the person is facing, and use Pythagoras for the straight-line distance.",
+      minutes: 14,
+      blocks: [
+        { t: "diagram", text: "          N\n     NW   |   NE\n          |\n  W ------+------ E\n          |\n     SW   |   SE\n          S", caption: "Right turn = 90° clockwise; left turn = 90° anticlockwise" },
+        { t: "p", text: "Always turn **from the way the person is facing**, not from the page. A person walking south who “turns right” now walks **west**." },
+        { t: "formula", items: [["Shortest distance", "√(east–west distance² + north–south distance²)"], ["Common triples", "3-4-5, 6-8-10, 5-12-13, 8-15-17"]] },
+        { t: "example", title: "Distance and direction", steps: ["Rohit walks 6 km north, turns left and walks 8 km.", "Left from north is west → he is 6 km north and 8 km west.", "Distance = √(6² + 8²) = 10 km."], answer: "10 km, north-west" },
+        { t: "path", moves: [{ dir: "N", dist: 6 }, { dir: "W", dist: 8 }], caption: "Rohit's walk — the dashed line is the shortest distance (6-8-10 triangle)" },
+        { t: "example", title: "Net movement", steps: ["10 m east, 6 m north, then 2 m west.", "Net east = 10 − 2 = 8 m; net north = 6 m.", "√(8² + 6²) = 10 m."], answer: "10 m north-east" },
+        { t: "path", moves: [{ dir: "E", dist: 10 }, { dir: "N", dist: 6 }, { dir: "W", dist: 2 }], caption: "East and west cancel partly: net 8 east, 6 north" },
+        {
+          t: "table",
+          head: ["Time", "Sun", "Shadow points"],
+          rows: [
+            ["Morning", "East", "West"],
+            ["Evening", "West", "East"],
+            ["Noon", "Overhead", "Almost no shadow"],
+          ],
+          caption: "Shadow questions",
+        },
+        { t: "example", title: "Shadow", steps: ["Just after sunrise, Sita's shadow falls to her right.", "Morning shadow points west, so her right side is west.", "If your right is west, you face south."], answer: "South" },
+        { t: "trap", text: "Find the direction of the FINAL point from the START (not the start from the final point). Read the question's last line twice." },
+        { t: "exam", items: ["“How far and in which direction is he from the starting point?”", "Shadow questions (morning / evening, left / right / behind)", "Degree turns (135° clockwise, then 90° anticlockwise)", "Banking: point-based direction (point A is 5 m west of B …)"] },
+        { t: "recap", items: ["North at the top; turn from the person's facing", "Right = clockwise, left = anticlockwise", "Pythagoras for distance; remember 3-4-5 and 6-8-10", "Morning shadow west, evening shadow east"] },
+      ],
+      quiz: [
+        { q: "Rohit walks 6 km north, turns left and walks 8 km. How far is he from the start?", options: ["14 km", "10 km", "2 km", "12 km"], answer: 1, explain: "√(36 + 64) = 10." },
+        { q: "In the evening, a man's shadow falls exactly behind him. Which direction is he facing?", options: ["East", "West", "North", "South"], answer: 1, explain: "Evening shadow points east, so he faces west." },
+        { q: "Facing east, Meena turns left, then left again, then right. Which way is she facing now?", options: ["North", "South", "East", "West"], answer: 0, explain: "East → north → west → north." },
+        { q: "A walks 10 m east, 6 m north and then 2 m west. What is the shortest distance from the start?", options: ["18 m", "10 m", "8 m", "14 m"], answer: 1, explain: "Net 8 m east and 6 m north." },
+      ],
+    },
+  ],
+};

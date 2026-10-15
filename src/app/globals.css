@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * Fonts: system stacks only, so builds and exam-centre PCs need no internet.
+ * Windows ships "Nirmala UI" (Devanagari) and "Segoe UI"; Noto fonts are used
+ * when installed (see docs/network-setup.md for adding them to candidate PCs).
+ */
+:root {
+  --background: #f4f6f9;
+  --foreground: #1b2430;
+  --surface: #ffffff;
+  --muted: #5b6675;
+  --border: #d5dbe3;
+  --primary: #1f4e8c;
+  --primary-foreground: #ffffff;
+  --danger: #b42318;
+  --success: #1e7b34;
+  --warning: #9a6700;
+
+  /* Question palette — always paired with a shape/symbol, never colour alone. */
+  --pal-not-visited: #e6e9ee;
+  --pal-not-answered: #d92d20;
+  --pal-answered: #1e7b34;
+  --pal-marked: #6941c6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --font-sans: "Segoe UI", "Noto Sans", "Nirmala UI", "Noto Sans Devanagari", "Mangal", system-ui, -apple-system, Arial, sans-serif;
+  --font-mono: Consolas, "Cascadia Mono", "Noto Sans Mono", ui-monospace, monospace;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Devanagari needs a little more line height to avoid clipped matras. */
+:lang(hi) {
+  line-height: 1.75;
+}
+
+.question-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 1.05rem;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  /* The question paper is never printed (or saved as PDF via the print dialog). */
+  .exam-paper {
+    display: none !important;
+  }
+  /* Current Affairs Capsule: A4 booklet with its colours kept. */
+  .capsule {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 11px;
+  }
+  .capsule .print-break {
+    break-before: page;
+  }
+  .capsule .avoid-break {
+    break-inside: avoid;
+  }
+  .capsule .screen-only {
+    display: none !important;
+  }
+  .capsule .print-only {
+    display: block !important;
+  }
+}
+
+.capsule .print-only {
+  display: none;
+}
+
+/* Named page: only the capsule is forced to A4 with these margins. */
+.capsule {
+  page: capsule;
+}
+@page capsule {
+  size: A4;
+  margin: 12mm;
+}

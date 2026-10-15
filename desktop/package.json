@@ -1,0 +1,26 @@
+{
+  "name": "cbt-candidate-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows candidate client for the CBT exam system (connects to the exam-centre server over LAN)",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && electron .",
+    "dist": "npm run build && electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "typescript": "5.9.3"
+  },
+  "build": {
+    "appId": "in.example.cbt.candidate",
+    "productName": "CBT Candidate",
+    "directories": { "output": "release" },
+    "files": ["dist/**", "package.json"],
+    "extraResources": [{ "from": "cbt-client.example.json", "to": "cbt-client.example.json" }],
+    "win": { "target": "nsis" },
+    "nsis": { "oneClick": false, "perMachine": true, "allowToChangeInstallationDirectory": true }
+  }
+}

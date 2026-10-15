@@ -1,0 +1,53 @@
+import type { LessonMcq } from "../types";
+
+/** Exam-level module tests for the Economy course, keyed by module id. */
+export const ECONOMY_PRACTICE: Record<string, LessonMcq[]> = {
+  basics: [
+    { q: "GNP is equal to:", options: ["GDP − depreciation", "GDP + net factor income from abroad", "NNP + indirect taxes", "GDP − subsidies"], answer: 1, explain: "National = by the country's people, wherever they produce." },
+    { q: "Disguised unemployment is most common in:", options: ["IT sector", "Agriculture", "Banking", "Manufacturing"], answer: 1, explain: "More people work on a farm than needed." },
+    { q: "Real GDP is calculated at:", options: ["Current prices", "Constant (base-year) prices", "Market exchange rates", "Factor cost only"], answer: 1, explain: "This removes the effect of inflation." },
+    { q: "Which of these is NOT a dimension of the HDI?", options: ["Life expectancy", "Education", "Income", "Inflation"], answer: 3, explain: "HDI: health, knowledge, standard of living." },
+    { q: "NDP is equal to:", options: ["GNP − depreciation", "GDP − depreciation", "GDP + depreciation", "NNP + taxes"], answer: 1, explain: "Net = gross minus wear and tear." },
+    { q: "Engel's law says that as income rises, the share spent on food:", options: ["Rises", "Falls", "Stays the same", "Doubles"], answer: 1, explain: "People spend more on other things." },
+    { q: "The Sustainable Development Goals are to be achieved by:", options: ["2025", "2030", "2035", "2047"], answer: 1, explain: "17 goals adopted in 2015." },
+    { q: "In India, GDP is estimated by the:", options: ["RBI", "NSO (MoSPI)", "NITI Aayog", "Finance Commission"], answer: 1, explain: "National Statistics Office." },
+    { q: "The Phillips curve shows the relationship between:", options: ["Tax rate and revenue", "Inflation and unemployment", "Income and inequality", "Price and demand"], answer: 1, explain: "Laffer curve = tax rate and revenue." },
+    { q: "India's economy is best described as:", options: ["Capitalist", "Socialist", "Mixed", "Traditional"], answer: 2, explain: "Public and private sectors together." },
+  ],
+  "money-banking": [
+    { q: "The repo rate is the rate at which:", options: ["Banks lend to the public", "RBI lends to banks", "Banks lend to RBI", "Government borrows from abroad"], answer: 1, explain: "Against government securities, short term." },
+    { q: "How many members does the Monetary Policy Committee have?", options: ["4", "5", "6", "7"], answer: 2, explain: "Chaired by the RBI Governor." },
+    { q: "The Cash Reserve Ratio is kept:", options: ["With the bank itself", "With the RBI", "With SEBI", "With the Finance Ministry"], answer: 1, explain: "SLR is kept by the bank itself." },
+    { q: "14 major banks were nationalised in:", options: ["1955", "1969", "1980", "1991"], answer: 1, explain: "19 July 1969; six more in 1980." },
+    { q: "NABARD was set up in:", options: ["1969", "1975", "1982", "1990"], answer: 2, explain: "For rural and agricultural credit." },
+    { q: "NIFTY 50 is the index of the:", options: ["BSE", "NSE", "MCX", "RBI"], answer: 1, explain: "SENSEX (30) is BSE's." },
+    { q: "IRDAI regulates:", options: ["Pensions", "Insurance", "Stock markets", "Banks"], answer: 1, explain: "PFRDA regulates pensions." },
+    { q: "Bank deposits are insured by DICGC up to:", options: ["₹1 lakh", "₹2 lakh", "₹5 lakh", "₹10 lakh"], answer: 2, explain: "Per depositor per bank, since 2020." },
+    { q: "Payments banks are NOT allowed to:", options: ["Accept deposits", "Issue debit cards", "Give loans", "Offer UPI"], answer: 2, explain: "They can take deposits up to ₹2 lakh." },
+    { q: "The Wholesale Price Index is released by the:", options: ["NSO", "RBI", "Office of the Economic Adviser, Ministry of Commerce", "NITI Aayog"], answer: 2, explain: "CPI is released by the NSO." },
+  ],
+  "public-finance": [
+    { q: "The fiscal deficit shows the government's:", options: ["Interest burden", "Total borrowing requirement", "Tax collection", "Trade gap"], answer: 1, explain: "Total expenditure minus receipts other than borrowing." },
+    { q: "The Union Budget is now presented on:", options: ["28 February", "1 February", "1 April", "31 March"], answer: 1, explain: "Since 2017." },
+    { q: "GST came into force on:", options: ["1 April 2017", "1 July 2017", "8 November 2016", "1 January 2018"], answer: 1, explain: "Through the 101st Amendment (2016)." },
+    { q: "The GST Council is provided under Article:", options: ["246A", "269A", "279A", "280"], answer: 2, explain: "Chaired by the Union Finance Minister." },
+    { q: "IGST is charged on:", options: ["Sales within a state", "Sales between states and imports", "Only exports", "Only services"], answer: 1, explain: "Collected by the Centre and shared." },
+    { q: "Which is a direct tax?", options: ["GST", "Customs duty", "Income tax", "Excise duty"], answer: 2, explain: "Paid by the person who bears it." },
+    { q: "The 15th Finance Commission was chaired by:", options: ["Y. V. Reddy", "N. K. Singh", "Vijay Kelkar", "Arvind Panagariya"], answer: 1, explain: "Panagariya chairs the 16th." },
+    { q: "The Railway Budget was merged with the Union Budget in:", options: ["2014", "2016", "2017", "2019"], answer: 2, explain: "Budget 2017-18." },
+    { q: "Minimum Support Prices are recommended by the:", options: ["FCI", "CACP", "NABARD", "Agriculture Ministry's NITI cell"], answer: 1, explain: "Commission for Agricultural Costs and Prices." },
+    { q: "The National Food Security Act was passed in:", options: ["2005", "2009", "2013", "2016"], answer: 2, explain: "5 kg grain per person per month." },
+  ],
+  development: [
+    { q: "The Planning Commission was set up in:", options: ["1947", "1950", "1951", "1956"], answer: 1, explain: "15 March 1950." },
+    { q: "The 1991 economic crisis was mainly a:", options: ["Banking crisis", "Balance-of-payments crisis", "Food crisis", "Stock-market crash"], answer: 1, explain: "Reserves covered only about two weeks of imports." },
+    { q: "In LPG reforms, “P” stands for:", options: ["Planning", "Privatisation", "Protection", "Productivity"], answer: 1, explain: "Liberalisation, Privatisation, Globalisation." },
+    { q: "The headquarters of the WTO is in:", options: ["New York", "Washington DC", "Geneva", "Paris"], answer: 2, explain: "Set up on 1 January 1995." },
+    { q: "Money sent home by Indians working abroad is part of the:", options: ["Capital account", "Current account", "Fiscal deficit", "Forex reserves only"], answer: 1, explain: "Current transfers." },
+    { q: "MGNREGA was enacted in:", options: ["2001", "2005", "2009", "2014"], answer: 1, explain: "100 days of work per rural household." },
+    { q: "Pradhan Mantri Jan Dhan Yojana was launched in:", options: ["2012", "2014", "2016", "2019"], answer: 1, explain: "Financial inclusion." },
+    { q: "The Global Hunger Index is published by:", options: ["FAO", "WFP", "Concern Worldwide & Welthungerhilfe", "UNDP"], answer: 2, explain: "It is not a UN report." },
+    { q: "Bihar produces about what share of India's makhana?", options: ["25–30%", "50%", "85–90%", "100%"], answer: 2, explain: "Mithila makhana has a GI tag." },
+    { q: "Liquor prohibition in Bihar began in:", options: ["2010", "2014", "2016", "2019"], answer: 2, explain: "April 2016." },
+  ],
+};
