@@ -7,6 +7,7 @@ import { randomBytes } from "node:crypto";
 import { passwordResetTokens, students } from "@db/schema";
 import { getDb } from "@/lib/db/client";
 import { AppError } from "@/lib/errors";
+import { GUEST_EMAIL_DOMAIN } from "@/lib/guest-tests";
 import { hashPassword, verifyAgainstDummy, verifyPassword } from "@/lib/auth/password";
 import { hashSessionToken } from "@/lib/auth/tokens";
 import { rateLimit } from "@/lib/security/rate-limit";
@@ -48,6 +49,26 @@ export async function registerStudent(
     const session = await createSession(tx, { type: "STUDENT", studentId: s.id }, meta);
     await audit(tx, studentActor(s.id, input.email, meta.ip), "student.register", { type: "student", id: s.id });
     return { ...session, studentId: s.id };
+  });
+}
+
+/**
+ * Name-only entry for guest tests: creates a throwaway student (unusable
+ * password, synthetic email) and signs it in.
+ */
+export async function startGuestSession(fullName: string, meta: RequestMeta): Promise<{ token: string; expiresAt: Date }> {
+  limit(`guest:${meta.ip ?? "?"}`, 30, 60 * 60 * 1000);
+  const email = `guest-${randomBytes(9).toString("hex")}@${GUEST_EMAIL_DOMAIN}`;
+  const passwordHash = await hashPassword(randomBytes(32).toString("base64url"));
+  const displayName = fullName.split(/\s+/)[0]!.slice(0, 40);
+  return getDb().transaction(async (tx) => {
+    const [s] = await tx
+      .insert(students)
+      .values({ email, fullName, displayName, passwordHash, showOnLeaderboard: false, lastLoginAt: now() })
+      .returning({ id: students.id });
+    const session = await createSession(tx, { type: "STUDENT", studentId: s!.id }, meta);
+    await audit(tx, studentActor(s!.id, fullName, meta.ip), "student.guest_start", { type: "student", id: s!.id });
+    return session;
   });
 }
 

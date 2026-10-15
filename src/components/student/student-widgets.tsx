@@ -50,6 +50,43 @@ export function BeginTest({ slug, lang, resume }: { slug: string; lang: Lang; re
   );
 }
 
+/** Name-only entry for guest tests: signs in as a guest, then opens the instructions. */
+export function GuestStart({ slug, lang }: { slug: string; lang: Lang }) {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <form
+      className="flex max-w-md flex-col gap-3 sm:flex-row sm:items-end"
+      data-testid="guest-start"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        try {
+          const { next } = await api<{ next: string }>("/api/student/guest", { body: { fullName: name, slug } });
+          router.push(next);
+          router.refresh();
+        } catch (err) {
+          setBusy(false);
+          setError((err as Error).message);
+        }
+      }}
+    >
+      <div className="flex-1">
+        <Field label={lang === "hi" ? "आपका नाम" : "Your name"}>
+          <Input value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={150} autoComplete="name" data-testid="guest-name" />
+        </Field>
+      </div>
+      <Button type="submit" size="lg" disabled={busy || name.trim().length < 2} data-testid="guest-start-button">
+        {st(lang, "startTest")}
+      </Button>
+      {error && <Alert tone="error">{error}</Alert>}
+    </form>
+  );
+}
+
 /** Student picks a time to sit the test; an admin must approve it before the test can start. */
 export function ScheduleTestForm({ slug, lang, minValue, timeZone }: { slug: string; lang: Lang; minValue: string; timeZone: string }) {
   const router = useRouter();

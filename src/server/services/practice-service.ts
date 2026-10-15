@@ -32,6 +32,7 @@ import {
 } from "@db/schema";
 import { getDb } from "@/lib/db/client";
 import { AppError } from "@/lib/errors";
+import { isGuestCategory, isGuestEmail } from "@/lib/guest-tests";
 import { scoreAttempt } from "@/lib/scoring/score";
 import { now } from "@/lib/time/clock";
 import type { AnswerChange, Language } from "@/lib/validation/schemas";
@@ -141,6 +142,7 @@ export async function getPublicTestDetail(slug: string) {
       instructionsHi: exam.instructionsHi,
       testKind: exam.testKind,
       accessLevel: exam.accessLevel,
+      categoryId: exam.categoryId,
       timed: exam.timed,
       durationMinutes: exam.defaultDurationMinutes,
       maxAttempts: exam.maxAttempts,
@@ -221,8 +223,19 @@ async function closeIfExpired(a: AttemptRow, at: Date): Promise<AttemptRow> {
   return fresh!;
 }
 
+/** True when the test can be taken with just a name (see lib/guest-tests). */
+export async function isGuestExam(exam: Pick<ExamRow, "categoryId" | "accessLevel">): Promise<boolean> {
+  if (exam.accessLevel !== "FREE" || !exam.categoryId) return false;
+  const [c] = await getDb().select({ slug: examCategories.slug }).from(examCategories).where(eq(examCategories.id, exam.categoryId));
+  return isGuestCategory(c?.slug);
+}
+
 export async function startPracticeAttempt(p: StudentPrincipal, input: { slug: string; language: Language }) {
   const exam = await getPublishedExamBySlug(input.slug);
+  const guestExam = await isGuestExam(exam);
+  if (isGuestEmail(p.email) && !guestExam) {
+    throw new AppError("FORBIDDEN", "Please register or log in to take this test.");
+  }
   if (!(await hasAccess(p.studentId, exam))) {
     throw new AppError("FORBIDDEN", "This is a premium test. Your account does not have access to it.");
   }
@@ -246,7 +259,8 @@ export async function startPracticeAttempt(p: StudentPrincipal, input: { slug: s
   const paper = await getPaperCached(exam.id);
   if (paper.every((s) => s.questions.length === 0)) throw new AppError("VALIDATION", "This test has no questions yet.");
   // New attempts need an approved schedule whose window is open (only while the setting is on; off by default).
-  const approval = (await getRequireApproval(db)) ? await findOpenApproval(p.studentId, exam.id, at) : undefined;
+  // Name-only tests start straight away.
+  const approval = !guestExam && (await getRequireApproval(db)) ? await findOpenApproval(p.studentId, exam.id, at) : undefined;
   if (approval === null) {
     throw new AppError("EXAM_NOT_OPEN", "Schedule this test and wait for admin approval. You can start it only during your approved time.");
   }

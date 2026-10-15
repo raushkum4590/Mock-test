@@ -9,7 +9,7 @@ import { getUiLang } from "@/lib/i18n/server-lang";
 import { st } from "@/lib/i18n/site";
 import { now } from "@/lib/time/clock";
 import { DEFAULT_TIME_ZONE, formatDateTime, utcToZonedInput } from "@/lib/time/zone";
-import { getPublicTestDetail, hasAccess } from "@/server/services/practice-service";
+import { getPublicTestDetail, hasAccess, isGuestExam } from "@/server/services/practice-service";
 import { getRequireApproval, getStudentRequestForExam } from "@/server/services/test-schedule-service";
 import { AutoRefresh } from "@/components/student/auto-refresh";
 import { BeginTest, CancelScheduleButton, ScheduleTestForm } from "@/components/student/student-widgets";
@@ -74,7 +74,7 @@ export default async function InstructionsPage({ params }: { params: Promise<{ s
           </tbody>
         </table>
       </div>
-      {active || !(await getRequireApproval()) ? (
+      {active || (await isGuestExam(d.exam)) || !(await getRequireApproval()) ? (
         <BeginTest slug={slug} lang={lang} resume={!!active} />
       ) : (
         <ScheduleGate slug={slug} lang={lang} request={await getStudentRequestForExam(student.studentId, d.exam.id)} />

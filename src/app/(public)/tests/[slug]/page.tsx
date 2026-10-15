@@ -9,7 +9,9 @@ import { pickText } from "@/lib/i18n/dictionary";
 import { getUiLang } from "@/lib/i18n/server-lang";
 import { st, type SiteKey } from "@/lib/i18n/site";
 import { formatDateTime } from "@/lib/time/zone";
-import { getPublicTestDetail, hasAccess } from "@/server/services/practice-service";
+import { isGuestEmail } from "@/lib/guest-tests";
+import { getPublicTestDetail, hasAccess, isGuestExam } from "@/server/services/practice-service";
+import { GuestStart } from "@/components/student/student-widgets";
 import { getRequireApproval } from "@/server/services/test-schedule-service";
 
 export default async function TestDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -23,7 +25,10 @@ export default async function TestDetailPage({ params }: { params: Promise<{ slu
     if (isAppError(e)) notFound();
     throw e;
   }
-  const student = await getStudent();
+  const guestExam = await isGuestExam(d.exam);
+  // A name-only guest counts as signed in only on guest tests.
+  const signedIn = await getStudent();
+  const student = signedIn && (guestExam || !isGuestEmail(signedIn.email)) ? signedIn : null;
   let access = d.exam.accessLevel === "FREE";
   let activeAttemptId: string | null = null;
   if (student) {
@@ -75,7 +80,9 @@ export default async function TestDetailPage({ params }: { params: Promise<{ slu
           {d.exam.resultPolicy === "IMMEDIATE" ? t("resultsImmediate") : `${t("resultsAt")} ${formatDateTime(d.exam.resultReleaseAt)}`}
         </p>
         <div className="mt-5">
-          {!student ? (
+          {!student && guestExam ? (
+            <GuestStart slug={slug} lang={lang} />
+          ) : !student ? (
             <Link href={`/student/login?next=${encodeURIComponent(`/student/tests/${slug}`)}`} className="inline-flex rounded-lg bg-primary px-5 py-2.5 font-medium text-white">
               {t("loginToStart")}
             </Link>
@@ -87,7 +94,7 @@ export default async function TestDetailPage({ params }: { params: Promise<{ slu
             </Link>
           ) : (
             <Link href={`/student/tests/${slug}`} className="inline-flex rounded-lg bg-primary px-5 py-2.5 font-medium text-white" data-testid="start-test">
-              {(await getRequireApproval()) ? t("scheduleTest") : t("startTest")}
+              {!guestExam && (await getRequireApproval()) ? t("scheduleTest") : t("startTest")}
             </Link>
           )}
         </div>
