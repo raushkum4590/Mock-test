@@ -10,6 +10,7 @@ const NAV: { href: string; label: string; permission?: Permission }[] = [
   { href: "/admin/questions", label: "Question bank", permission: "questions.manage" },
   { href: "/admin/catalog", label: "Online catalogue", permission: "exams.manage" },
   { href: "/admin/students", label: "Students (online)", permission: "students.manage" },
+  { href: "/admin/test-attempts", label: "Mock test attempts", permission: "students.manage" },
   { href: "/admin/test-requests", label: "Test schedule requests", permission: "students.manage" },
   { href: "/admin/candidates", label: "Candidates", permission: "candidates.manage" },
   { href: "/admin/centres", label: "Exam centres", permission: "candidates.manage" },

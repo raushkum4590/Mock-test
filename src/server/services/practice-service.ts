@@ -32,7 +32,7 @@ import {
 } from "@db/schema";
 import { getDb } from "@/lib/db/client";
 import { AppError } from "@/lib/errors";
-import { isGuestCategory, isGuestEmail } from "@/lib/guest-tests";
+import { GUEST_EMAIL_DOMAIN, isGuestCategory, isGuestEmail } from "@/lib/guest-tests";
 import { scoreAttempt } from "@/lib/scoring/score";
 import { now } from "@/lib/time/clock";
 import type { AnswerChange, Language } from "@/lib/validation/schemas";
@@ -799,6 +799,53 @@ export async function getLeaderboard(examId: string, viewerStudentId?: string, l
     rows: ranked.slice(0, limit),
     viewer: viewer ? { ...viewer, percentile: cohort > 1 ? Math.round(((cohort - viewer.rank) / (cohort - 1)) * 1000) / 10 : null } : null,
   };
+}
+
+// --- Admin ----------------------------------------------------------------------------
+
+/** Every practice attempt (guests and registered students), newest first, for the admin console. */
+export async function listPracticeAttemptsForAdmin(filter: { examId?: string; who?: "guest" | "registered" } = {}, limit = 500) {
+  const guestEmail = sql`lower(${students.email}) like ${`%@${GUEST_EMAIL_DOMAIN}`}`;
+  const rows = await getDb()
+    .select({
+      attemptId: practiceAttempts.id,
+      attemptNumber: practiceAttempts.attemptNumber,
+      status: practiceAttempts.status,
+      startedAt: practiceAttempts.startedAt,
+      submittedAt: practiceAttempts.submittedAt,
+      fullName: students.fullName,
+      email: students.email,
+      examCode: exams.code,
+      examTitle: exams.titleEn,
+      finalScore: practiceResults.finalScore,
+      maxScore: practiceResults.maxScore,
+      correct: practiceResults.correct,
+      attempted: practiceResults.attempted,
+      totalQuestions: practiceResults.totalQuestions,
+      timeTakenSeconds: practiceResults.timeTakenSeconds,
+    })
+    .from(practiceAttempts)
+    .innerJoin(students, eq(students.id, practiceAttempts.studentId))
+    .innerJoin(exams, eq(exams.id, practiceAttempts.examId))
+    .leftJoin(practiceResults, eq(practiceResults.attemptId, practiceAttempts.id))
+    .where(
+      and(
+        filter.examId ? eq(practiceAttempts.examId, filter.examId) : undefined,
+        filter.who === "guest" ? guestEmail : filter.who === "registered" ? sql`not (${guestEmail})` : undefined,
+      ),
+    )
+    .orderBy(desc(practiceAttempts.startedAt))
+    .limit(limit);
+  return rows.map((r) => ({ ...r, isGuest: isGuestEmail(r.email) }));
+}
+
+/** Tests that have at least one practice attempt, for the admin filter. */
+export async function listAttemptedExams() {
+  return getDb()
+    .selectDistinct({ id: exams.id, code: exams.code, titleEn: exams.titleEn })
+    .from(exams)
+    .innerJoin(practiceAttempts, eq(practiceAttempts.examId, exams.id))
+    .orderBy(asc(exams.titleEn));
 }
 
 // --- Bookmarks ------------------------------------------------------------------------

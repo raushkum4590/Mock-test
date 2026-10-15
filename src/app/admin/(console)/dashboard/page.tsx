@@ -42,6 +42,7 @@ export default async function DashboardPage() {
             ["/admin/exams", "Create practice tests", "exams.manage"],
             ["/admin/catalog", "Online catalogue & test series", "exams.manage"],
             ["/admin/students", "Students & premium access", "students.manage"],
+            ["/admin/test-attempts", "Mock test attempts (guests & students)", "students.manage"],
             ["/admin/test-requests", "Test schedule requests", "students.manage"],
           ]}
           role={admin.role}

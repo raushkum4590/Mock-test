@@ -3,7 +3,7 @@
  * A guest gets a throwaway student row whose email is on GUEST_EMAIL_DOMAIN;
  * guests can only start tests in these categories.
  */
-export const GUEST_CATEGORY_SLUGS: readonly string[] = ["tally-prime"];
+export const GUEST_CATEGORY_SLUGS: readonly string[] = ["tally-prime", "web-development"];
 
 export const GUEST_EMAIL_DOMAIN = "guest.edqity.local";
 
