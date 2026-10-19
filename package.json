@@ -46,6 +46,7 @@
     "react-is": "19.3.0",
     "recharts": "3.10.1",
     "server-only": "0.0.1",
+    "sucrase": "^3.35.0",
     "zod": "4.6.5"
   },
   "devDependencies": {

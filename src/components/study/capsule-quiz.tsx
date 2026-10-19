@@ -6,7 +6,7 @@ import { cx } from "@/components/ui";
 const LETTERS = ["A", "B", "C", "D"];
 
 /** A question with an optional source link and/or explanation shown after answering. */
-export type QuizItem = { id: string; q: string; options: string[]; answer: number; url?: string; explain?: string };
+export type QuizItem = { id: string; q: string; code?: string; options: string[]; answer: number; url?: string; explain?: string };
 
 /** Tap-to-answer MCQs with instant feedback and a running score. Prints as a plain question list. */
 export function CapsuleQuiz({ quiz, lang, columns = 2 }: { quiz: QuizItem[]; lang: "en" | "hi"; columns?: 1 | 2 }) {
@@ -41,6 +41,7 @@ export function CapsuleQuiz({ quiz, lang, columns = 2 }: { quiz: QuizItem[]; lan
                 <span className="mr-1 text-muted">Q{i + 1}.</span>
                 {q.q}
               </p>
+              {q.code && <pre className="mt-2 overflow-x-auto rounded-md bg-slate-900 px-3 py-2 font-mono text-[13px] leading-relaxed text-slate-100">{q.code}</pre>}
               <ul className="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
                 {q.options.map((o, j) => {
                   const isAnswer = j === q.answer;

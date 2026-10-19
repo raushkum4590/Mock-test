@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import type { Block } from "@/lib/learn/types";
 import { PathFigure, SeatsFigure, SeriesFigure, StackFigure, StepsFigure, TreeFigure, VennFigure } from "./lesson-visuals";
+import { MultiCode } from "./multi-code";
 
 /** Renders **bold** and `code` inside lesson text. */
 export function Rich({ text }: { text: string }) {
@@ -33,8 +35,40 @@ function Callout({ icon, title, tone, children }: { icon: string; title: string;
   );
 }
 
-export function LessonBlock({ block, lang }: { block: Block; lang: "en" | "hi" }) {
+/** W3Schools-style example box used by tutorial courses, with an optional "Try it Yourself" link. */
+function TutorialExample({ block, tryItHref, hi }: { block: Extract<Block, { t: "code" }>; tryItHref?: string; hi: boolean }) {
+  return (
+    <figure className="avoid-break rounded-lg bg-[#e7e9eb] p-4 text-slate-900">
+      <p className="mb-2 text-lg font-semibold">{block.title ?? (hi ? "उदाहरण" : "Example")}</p>
+      <pre className="overflow-x-auto border-l-4 border-[#04aa6d] bg-white p-4 font-mono text-[13px] leading-relaxed">{block.code}</pre>
+      {block.output !== undefined && (
+        <div className="mt-2 rounded bg-white/70 px-4 py-2 font-mono text-[13px]">
+          <span className="mr-2 text-slate-500">{hi ? "आउटपुट" : "Output"} ▸</span>
+          <span className="whitespace-pre-wrap">{block.output}</span>
+        </div>
+      )}
+      {block.note && (
+        <figcaption className="mt-2 text-sm">
+          <Rich text={block.note} />
+        </figcaption>
+      )}
+      {tryItHref && (
+        <Link href={tryItHref} className="no-print mt-3 inline-block rounded bg-[#04aa6d] px-5 py-2 text-[15px] font-semibold text-white hover:bg-[#059862]">
+          {hi ? "स्वयं आज़माएँ »" : "Try it Yourself »"}
+        </Link>
+      )}
+    </figure>
+  );
+}
+
+export function LessonBlock({ block, lang, tutorial = false, tryItHref }: { block: Block; lang: "en" | "hi"; tutorial?: boolean; tryItHref?: string }) {
   const hi = lang === "hi";
+  if (tutorial && block.t === "code") return <TutorialExample block={block} tryItHref={tryItHref} hi={hi} />;
+  if (block.t === "multicode") {
+    return (
+      <MultiCode title={block.title} code={block.code} output={block.output} tryItHref={tryItHref} lang={lang} note={block.note ? <Rich text={block.note} /> : undefined} />
+    );
+  }
   switch (block.t) {
     case "p":
       return (
@@ -42,6 +76,24 @@ export function LessonBlock({ block, lang }: { block: Block; lang: "en" | "hi" }
           <Rich text={block.text} />
         </p>
       );
+    case "h":
+      return (
+        <h2 className="pt-2 text-lg font-bold">
+          <Rich text={block.text} />
+        </h2>
+      );
+    case "note": {
+      const style = {
+        tip: { icon: "✔", title: hi ? "टिप" : "Tip", tone: "border-emerald-400 bg-emerald-50 text-emerald-950" },
+        warn: { icon: "⚠", title: hi ? "ध्यान दें" : "Watch out", tone: "border-rose-400 bg-rose-50 text-rose-950" },
+        info: { icon: "ℹ", title: hi ? "नोट" : "Note", tone: "border-amber-400 bg-amber-50 text-amber-950" },
+      }[block.kind];
+      return (
+        <Callout icon={style.icon} title={block.title ?? style.title} tone={style.tone}>
+          <Rich text={block.text} />
+        </Callout>
+      );
+    }
     case "analogy":
       return (
         <Callout icon="💡" title={hi ? "ऐसे समझें" : "Think of it like this"} tone="border-sky-400 bg-sky-50 text-sky-950">
@@ -162,7 +214,9 @@ export function LessonBlock({ block, lang }: { block: Block; lang: "en" | "hi" }
     case "exam":
       return (
         <div className="avoid-break rounded-xl border-2 border-emerald-300 bg-emerald-50/70 p-4">
-          <p className="text-xs font-bold uppercase tracking-wider text-emerald-800">🎯 {hi ? "परीक्षा में ऐसे पूछा जाता है" : "How exams ask this"}</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+            🎯 {tutorial ? (hi ? "इंटरव्यू में पूछा जाता है" : "Asked in interviews") : hi ? "परीक्षा में ऐसे पूछा जाता है" : "How exams ask this"}
+          </p>
           <ul className="mt-2 space-y-1.5">
             {block.items.map((it, i) => (
               <li key={i} className="flex gap-2 text-[15px] text-emerald-950">

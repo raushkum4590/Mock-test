@@ -6,13 +6,19 @@
 export type Block =
   /** A paragraph. */
   | { t: "p"; text: string }
+  /** A sub-heading inside a lesson. */
+  | { t: "h"; text: string }
+  /** A boxed tip, warning or side note (programming courses). */
+  | { t: "note"; kind: "tip" | "warn" | "info"; title?: string; text: string }
   /** "Think of it like…" — an everyday picture of the idea. */
   | { t: "analogy"; text: string }
   /** Short key points. */
   | { t: "points"; items: string[] }
   | { t: "table"; head: string[]; rows: string[][]; caption?: string }
-  /** Code (C, C++, Python, SQL…) with optional output. */
-  | { t: "code"; lang: string; code: string; output?: string; note?: string }
+  /** Code (C, C++, Python, SQL…) with optional output. `tryIt` adds a "Try it Yourself" editor (tutorial courses). */
+  | { t: "code"; lang: string; code: string; output?: string; note?: string; title?: string; tryIt?: "react" | "js" }
+  /** One program in several languages, shown as tabs (DSA course). Every version prints the same output. */
+  | { t: "multicode"; title?: string; code: Record<CodeLang, string>; output?: string; note?: string }
   /** A solved example, step by step. */
   | { t: "example"; title: string; steps: string[]; answer: string }
   /** A common mistake / exam trap. */
@@ -43,9 +49,13 @@ export type Block =
   /** Step-by-step rearrangement; `moved` items are highlighted. */
   | { t: "steps"; rows: { label: string; items: string[]; moved?: string[] }[]; caption?: string };
 
+/** Languages a multicode block is written in, in tab order. */
+export type CodeLang = "python" | "c" | "cpp" | "java" | "javascript";
+
 export type CompassDir = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
 
-export type LessonMcq = { q: string; options: [string, string, string, string]; answer: 0 | 1 | 2 | 3; explain: string };
+/** `code` is an optional snippet shown under the question, line breaks kept. */
+export type LessonMcq = { q: string; code?: string; options: [string, string, string, string]; answer: 0 | 1 | 2 | 3; explain: string };
 
 export type Lesson = {
   id: string;
@@ -83,4 +93,6 @@ export type Course = {
   modules: LearnModule[];
   /** Extra links at the bottom of the course page (mocks, kits, PDFs). */
   links?: CourseLink[];
+  /** Programming tutorial layout: full lesson menu on the left and "Try it Yourself" editors for runnable examples. */
+  tutorial?: boolean;
 };

@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
 }
 
 /** Printable question set with the answers at the end. */
-function PracticeSet({ title, quiz }: { title: string; quiz: { q: string; options: readonly string[]; answer: number; explain: string }[] }) {
+function PracticeSet({ title, quiz }: { title: string; quiz: { q: string; code?: string; options: readonly string[]; answer: number; explain: string }[] }) {
   return (
     <div className="avoid-break rounded-xl border border-violet-200 bg-violet-50/50 p-4">
       <p className="font-bold">{title}</p>
@@ -27,6 +27,7 @@ function PracticeSet({ title, quiz }: { title: string; quiz: { q: string; option
             <p className="font-medium">
               Q{k + 1}. {q.q}
             </p>
+            {q.code && <pre className="mt-1 overflow-x-auto rounded-md bg-white px-3 py-2 font-mono text-[12px] leading-relaxed ring-1 ring-violet-200">{q.code}</pre>}
             <p className="mt-1 grid grid-cols-2 gap-x-4 gap-y-0.5">
               {q.options.map((o, x) => (
                 <span key={x}>

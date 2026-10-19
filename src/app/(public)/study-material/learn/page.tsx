@@ -7,8 +7,10 @@ import { StudyHeader } from "@/components/study/study-ui";
 
 export const metadata = { title: "Courses" };
 
-const ICONS: Record<string, string> = { "computer-science": "💻", history: "🏛", geography: "🌏", polity: "⚖", economy: "📈" };
+const ICONS: Record<string, string> = { "computer-science": "💻", history: "🏛", geography: "🌏", polity: "⚖", economy: "📈", javascript: "🟨", react: "⚛", dsa: "🧩", python: "🐍", statistics: "📊", "data-science": "🧪", "python-data-science-handbook": "📘", "essential-math": "∑", "hands-on-ml": "🤖" };
 const TONES = ["from-indigo-600 to-violet-700", "from-amber-600 to-orange-700", "from-teal-600 to-emerald-700", "from-sky-600 to-blue-700", "from-rose-600 to-pink-700"];
+/** Courses with their own colour instead of the rotating TONES. */
+const TONE_BY_ID: Record<string, string> = { javascript: "from-zinc-800 to-slate-900", react: "from-cyan-700 to-sky-900", dsa: "from-emerald-700 to-teal-900", python: "from-blue-700 to-yellow-600", statistics: "from-fuchsia-700 to-indigo-900", "data-science": "from-orange-600 to-rose-800", "python-data-science-handbook": "from-sky-700 to-indigo-800", "essential-math": "from-violet-700 to-purple-900", "hands-on-ml": "from-amber-700 to-red-800" };
 
 export default async function CoursesPage() {
   const lang = await getUiLang();
@@ -32,7 +34,7 @@ export default async function CoursesPage() {
           const { lessons, minutes, questions } = courseStats(c);
           return (
             <Link key={c.id} href={courseHref(c)} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-              <div className={`bg-gradient-to-br ${TONES[i % TONES.length]} p-5 text-white`}>
+              <div className={`bg-gradient-to-br ${TONE_BY_ID[c.id] ?? TONES[i % TONES.length]} p-5 text-white`}>
                 <span className="text-3xl" aria-hidden>
                   {ICONS[c.id] ?? "📘"}
                 </span>

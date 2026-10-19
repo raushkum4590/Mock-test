@@ -7,6 +7,7 @@ import { shuffleOptions } from "@/lib/learn/shuffle";
 import { LessonBlock } from "@/components/learn/lesson-blocks";
 import { DoneButton, DoneTick, ProgressBar } from "@/components/learn/progress";
 import { CapsuleQuiz } from "@/components/study/capsule-quiz";
+import { TutorialLesson } from "@/components/learn/tutorial-lesson";
 import { cx } from "@/components/ui";
 
 type Params = Promise<{ course: string; lesson: string }>;
@@ -30,6 +31,7 @@ export default async function LessonPage({ params }: { params: Params }) {
     const id = `${ref.slug}-${i + 1}`;
     return shuffleOptions({ ...q, id }, id);
   });
+  if (course.tutorial) return <TutorialLesson course={course} base={base} lessonRef={ref} prev={prev} next={next} quiz={quiz} lang={lang} />;
   const finalLink = course.links?.[0];
   // The module test follows the module's last lesson.
   const moduleTest =
