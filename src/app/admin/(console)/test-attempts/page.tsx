@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireAdminPage } from "@/lib/auth/session";
 import { formatDateTime } from "@/lib/time/zone";
 import { listAttemptedExams, listPracticeAttemptsForAdmin } from "@/server/services/practice-service";
@@ -7,17 +8,20 @@ export const metadata = { title: "Mock test attempts" };
 
 const duration = (s: number) => `${Math.floor(s / 60)}m ${String(s % 60).padStart(2, "0")}s`;
 
-export default async function TestAttemptsPage({ searchParams }: { searchParams: Promise<{ exam?: string; who?: string }> }) {
+export default async function TestAttemptsPage({ searchParams }: { searchParams: Promise<{ exam?: string; who?: string; student?: string }> }) {
   await requireAdminPage("students.manage");
-  const { exam, who } = await searchParams;
+  const { exam, who, student } = await searchParams;
   const whoFilter = who === "guest" || who === "registered" ? who : undefined;
-  const examId = exam && /^[0-9a-f-]{36}$/i.test(exam) ? exam : undefined;
-  const [rows, examList] = await Promise.all([listPracticeAttemptsForAdmin({ examId, who: whoFilter }), listAttemptedExams()]);
+  const isUuid = (v?: string) => !!v && /^[0-9a-f-]{36}$/i.test(v);
+  const examId = isUuid(exam) ? exam : undefined;
+  const studentId = isUuid(student) ? student : undefined;
+  const [rows, examList] = await Promise.all([listPracticeAttemptsForAdmin({ examId, studentId, who: whoFilter }), listAttemptedExams()]);
   return (
     <>
       <h1 className="text-xl font-semibold">Mock test attempts</h1>
       <Card title={`Attempts (${rows.length})`}>
         <form className="mb-3 flex flex-wrap gap-2 text-sm" method="get">
+          {studentId && <input type="hidden" name="student" value={studentId} />}
           <select name="exam" defaultValue={exam ?? ""} className="rounded border border-border px-2 py-1">
             <option value="">All tests</option>
             {examList.map((e) => (
@@ -32,6 +36,11 @@ export default async function TestAttemptsPage({ searchParams }: { searchParams:
             <option value="registered">Registered students only</option>
           </select>
           <button className="rounded border border-border bg-surface px-3 py-1">Filter</button>
+          {studentId && (
+            <Link href="/admin/test-attempts" className="self-center text-muted underline">
+              Showing one student{rows[0] ? ` (${rows[0].fullName})` : ""} — show all
+            </Link>
+          )}
         </form>
         <Table>
           <thead>

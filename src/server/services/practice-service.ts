@@ -804,7 +804,7 @@ export async function getLeaderboard(examId: string, viewerStudentId?: string, l
 // --- Admin ----------------------------------------------------------------------------
 
 /** Every practice attempt (guests and registered students), newest first, for the admin console. */
-export async function listPracticeAttemptsForAdmin(filter: { examId?: string; who?: "guest" | "registered" } = {}, limit = 500) {
+export async function listPracticeAttemptsForAdmin(filter: { examId?: string; studentId?: string; who?: "guest" | "registered" } = {}, limit = 500) {
   const guestEmail = sql`lower(${students.email}) like ${`%@${GUEST_EMAIL_DOMAIN}`}`;
   const rows = await getDb()
     .select({
@@ -831,6 +831,7 @@ export async function listPracticeAttemptsForAdmin(filter: { examId?: string; wh
     .where(
       and(
         filter.examId ? eq(practiceAttempts.examId, filter.examId) : undefined,
+        filter.studentId ? eq(practiceAttempts.studentId, filter.studentId) : undefined,
         filter.who === "guest" ? guestEmail : filter.who === "registered" ? sql`not (${guestEmail})` : undefined,
       ),
     )

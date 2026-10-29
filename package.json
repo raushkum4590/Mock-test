@@ -30,6 +30,7 @@
     "mock:tally": "tsx scripts/seed-tally-payroll.ts",
     "mock:html": "tsx scripts/seed-html-basics.ts",
     "mock:tally-cost-centre": "tsx scripts/seed-tally-cost-centre.ts",
+    "mock:html-css": "tsx scripts/seed-html-css.ts",
     "ca:backfill": "tsx scripts/current-affairs/backfill.ts",
     "ca:build": "tsx scripts/current-affairs/build.ts",
     "ca:pdf": "tsx scripts/current-affairs/pdf.ts"

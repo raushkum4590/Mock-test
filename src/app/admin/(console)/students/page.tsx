@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import Link from "next/link";
 import { exams } from "@db/schema";
 import { requireAdminPage } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/client";
@@ -12,11 +13,12 @@ import { Badge, Card, Table } from "@/components/ui";
 
 export const metadata = { title: "Students" };
 
-export default async function StudentsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+export default async function StudentsPage({ searchParams }: { searchParams: Promise<{ q?: string; who?: string }> }) {
   await requireAdminPage("students.manage");
-  const { q } = await searchParams;
+  const { q, who } = await searchParams;
+  const whoFilter = who === "guest" || who === "registered" ? who : undefined;
   const [students, entitlements, series, premium] = await Promise.all([
-    listStudents(q),
+    listStudents(q, whoFilter),
     listEntitlements(),
     listAllSeries(),
     getDb().select({ id: exams.id, code: exams.code, titleEn: exams.titleEn }).from(exams).where(eq(exams.accessLevel, "PREMIUM")),
@@ -24,34 +26,58 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
   return (
     <>
       <h1 className="text-xl font-semibold">Students (online platform)</h1>
-      <Card title={`Students (${students.length})`}>
-        <form className="mb-3 flex gap-2 text-sm" method="get">
+      <Card title={`Students & guests (${students.length})`}>
+        <form className="mb-3 flex flex-wrap gap-2 text-sm" method="get">
           <input name="q" defaultValue={q ?? ""} placeholder="Email or name" className="rounded border border-border px-2 py-1" />
+          <select name="who" defaultValue={whoFilter ?? ""} className="rounded border border-border px-2 py-1">
+            <option value="">Guests and students</option>
+            <option value="guest">Guests only (name only)</option>
+            <option value="registered">Registered students only</option>
+          </select>
           <button className="rounded border border-border bg-surface px-3 py-1">Search</button>
         </form>
         <Table>
           <thead>
             <tr>
-              <th>Email</th>
               <th>Name</th>
+              <th>Type</th>
+              <th>Email</th>
               <th>Registered</th>
               <th>Last login</th>
+              <th>Mock attempts</th>
               <th>Status</th>
               <th />
             </tr>
           </thead>
           <tbody>
+            {students.length === 0 && (
+              <tr>
+                <td colSpan={8} className="text-center text-muted">
+                  No students found.
+                </td>
+              </tr>
+            )}
             {students.map((s) => (
               <tr key={s.id}>
-                <td>{s.email}</td>
                 <td>
-                  {s.fullName} <span className="text-xs text-muted">({s.displayName})</span>
+                  {s.fullName} {!s.isGuest && <span className="text-xs text-muted">({s.displayName})</span>}
                 </td>
+                <td>{s.isGuest ? <Badge tone="WAITING">Guest</Badge> : <Badge tone="PUBLISHED">Student</Badge>}</td>
+                <td>{s.isGuest ? <span className="text-muted">—</span> : s.email}</td>
                 <td>{formatDateTime(s.createdAt)}</td>
                 <td>{formatDateTime(s.lastLoginAt)}</td>
+                <td>
+                  {s.attempts > 0 ? (
+                    <Link href={`/admin/test-attempts?student=${s.id}`} className="underline">
+                      {s.attempts}
+                    </Link>
+                  ) : (
+                    0
+                  )}
+                </td>
                 <td>{s.isActive ? <Badge tone="READY">Active</Badge> : <Badge tone="CANCELLED">Inactive</Badge>}</td>
                 <td className="flex flex-wrap gap-1">
-                  <ResetLinkButton studentId={s.id} />
+                  {!s.isGuest && <ResetLinkButton studentId={s.id} />}
                   <ActionButton url={`/api/admin/students/${s.id}`} method="PATCH" body={{ isActive: !s.isActive }} variant="ghost">
                     {s.isActive ? "Deactivate" : "Activate"}
                   </ActionButton>

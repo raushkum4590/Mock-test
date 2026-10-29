@@ -4,10 +4,10 @@
  */
 import { and, eq, gt, isNull, sql } from "drizzle-orm";
 import { randomBytes } from "node:crypto";
-import { passwordResetTokens, students } from "@db/schema";
+import { passwordResetTokens, practiceAttempts, students } from "@db/schema";
 import { getDb } from "@/lib/db/client";
 import { AppError } from "@/lib/errors";
-import { GUEST_EMAIL_DOMAIN } from "@/lib/guest-tests";
+import { GUEST_EMAIL_DOMAIN, isGuestEmail } from "@/lib/guest-tests";
 import { hashPassword, verifyAgainstDummy, verifyPassword } from "@/lib/auth/password";
 import { hashSessionToken } from "@/lib/auth/tokens";
 import { rateLimit } from "@/lib/security/rate-limit";
@@ -171,10 +171,12 @@ export async function getStudentProfile(studentId: string) {
 
 // --- Admin student management ------------------------------------------------------
 
-export async function listStudents(search?: string) {
+/** Registered students and name-only guests (filter with `who`), newest first. */
+export async function listStudents(search?: string, who?: "guest" | "registered") {
   const db = getDb();
   const like = search ? `%${search.replace(/[%_\\]/g, (m) => `\\${m}`)}%` : null;
-  return db
+  const guestEmail = sql`lower(${students.email}) like ${`%@${GUEST_EMAIL_DOMAIN}`}`;
+  const rows = await db
     .select({
       id: students.id,
       email: students.email,
@@ -183,11 +185,18 @@ export async function listStudents(search?: string) {
       isActive: students.isActive,
       lastLoginAt: students.lastLoginAt,
       createdAt: students.createdAt,
+      attempts: sql<number>`(select count(*)::int from ${practiceAttempts} where ${practiceAttempts.studentId} = ${students.id})`,
     })
     .from(students)
-    .where(like ? sql`${students.email} ilike ${like} or ${students.fullName} ilike ${like}` : undefined)
+    .where(
+      and(
+        like ? sql`(${students.email} ilike ${like} or ${students.fullName} ilike ${like})` : undefined,
+        who === "guest" ? guestEmail : who === "registered" ? sql`not (${guestEmail})` : undefined,
+      ),
+    )
     .orderBy(sql`${students.createdAt} desc`)
     .limit(500);
+  return rows.map((r) => ({ ...r, isGuest: isGuestEmail(r.email) }));
 }
 
 export async function setStudentActive(actor: Actor, studentId: string, isActive: boolean) {
