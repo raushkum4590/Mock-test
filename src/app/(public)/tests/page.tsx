@@ -38,6 +38,18 @@ export default async function TestsPage({ searchParams }: { searchParams: Promis
         {tests.length} {st(lang, "testsAvailable")} · {groups.length} {st(lang, "examCategories")}
       </p>
 
+      <Link
+        href="/coding-test/html"
+        className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4 hover:border-primary"
+        data-testid="html-coding-test-link"
+      >
+        <span>
+          <span className="block font-semibold">HTML Live Coding Test</span>
+          <span className="text-sm text-muted">Write and run real HTML · 5 questions · 30 min · No login needed</span>
+        </span>
+        <span className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white">Start coding →</span>
+      </Link>
+
       {/* Category filter */}
       <nav aria-label={st(lang, "examCategories")} className="-mx-4 mt-5 overflow-x-auto px-4">
         <ul className="flex gap-2 pb-2">
